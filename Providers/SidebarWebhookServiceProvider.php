@@ -16,7 +16,7 @@ class SidebarWebhookServiceProvider extends ServiceProvider
 
     public function hooks()
     {
-        \Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation, $mailbox) {
+        \Eventy::addAction('conversation.after_prev_convs', function ($customer, $conversation, $mailbox) {
             $webhookUri = 'https://example.com/';
             $customerEmail = $customer->getMainEmail();
             if (empty($customerEmail)) {
@@ -28,7 +28,7 @@ class SidebarWebhookServiceProvider extends ServiceProvider
             ])->render();
         }, 10, 3);
     }
-    
+
     public function registerViews()
     {
         $viewPath = resource_path('views/modules/sidebarwebhook');
