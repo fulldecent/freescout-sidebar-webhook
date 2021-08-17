@@ -58,4 +58,4 @@ At this point, it is a non-goal to add friendly configuration of the webhook URI
 
 ## Inspiration
 
-* This project was inspired by [Sidebar API]([Sidebar API – Scoutdevs](https://scoutdevs.com/downloads/sidebar-api/)).
+* This project was inspired by [Sidebar API](https://scoutdevs.com/downloads/sidebar-api/).
