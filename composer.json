@@ -1,0 +1,24 @@
+{
+    "name": "fulldecent/freescout-sidebar-webhook",
+    "description": "",
+    "authors": [
+        {
+            "name": "William Entriken",
+            "email": "github.com@phor.net"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"
+            ],
+            "aliases": {
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\SidebarWebhook\\": ""
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "name": "Sidebar Webhook",
+    "alias": "sidebarwebhook",
+    "description": "Sidebar Webhook asynchronously injects HTML from your server into conversation sidebars.",
+    "version": "1.0.0",
+    "detailsUrl": "https://github.com/fulldecent/freescout-sidebar-webhook",
+    "author": "William Entriken",
+    "providers": [
+        "Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"
+    ],
+    "requires": []
+}
