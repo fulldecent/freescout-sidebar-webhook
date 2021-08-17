@@ -3,7 +3,7 @@ Sidebar Webhook asynchronously injects HTML from your server into conversation s
 
 This screenshot shows what it does: you can load any content, on a per-customer basis from your own web server, asynchronously, every time a conversation is loaded on the screen.
 
-![screenshot](/Users/williamentriken/Developer/freescout-sidebar-webhook/screenshot.png)
+![screenshot](screenshot.png)
 
 ## Use cases
 
