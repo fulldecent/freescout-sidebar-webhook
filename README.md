@@ -3,6 +3,8 @@ Sidebar Webhook asynchronously injects HTML from your server into conversation s
 
 This screenshot shows what it does: you can load any content, on a per-customer basis from your own web server, asynchronously, every time a conversation is loaded on the screen.
 
+In this picture, the pink rectangle and happy faces were loaded from an external server based on the customer's email address.
+
 ![screenshot](screenshot.png)
 
 ## Use cases
