@@ -3,43 +3,29 @@
 namespace Modules\SidebarWebhook\Providers;
 use Illuminate\Support\ServiceProvider;
 
-define('MODULE_SA', 'sidebarwebhook');
-
 class SidebarWebhookServiceProvider extends ServiceProvider
 {
+    private const MODULE_NAME = 'sidebarwebhook';
+    private const WEBHOOK_URL = 'https://example.com/';
+
     public function boot()
     {
-        // Behaviors documented at https://nwidart.com/laravel-modules/v6/advanced-tools/module-resources
-        $this->registerViews();
-        $this->hooks();
-    }
+        $this->loadViewsFrom(__DIR__.'/../Resources/views', self::MODULE_NAME);
+        
+        \Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation, $mailbox) {
+            $payload = [
+                'customerEmail'       => $customer->getMainEmail(),
+                'customerPhones'      => $customer->getPhones(),
+                'conversationSubject' => $conversation->getSubject(),
+                'conversationType'    => $conversation->getTypeName(),
+                'mailboxId'           => $mailbox->id,
+                'csrfToken'           => csrf_token(),
+            ];
 
-    public function hooks()
-    {
-        \Eventy::addAction('conversation.after_prev_convs', function ($customer, $conversation, $mailbox) {
-            $webhookUri = 'https://example.com/';
-            $customerEmail = $customer->getMainEmail();
-            if (empty($customerEmail)) {
-                return;
-            }
-            echo \View::make('sidebarwebhook::partials/sidebar', [
-                'customerEmail' => $customerEmail,
-                'url'           => $webhookUri,
+            echo \View::make(self::MODULE_NAME . '::partials/sidebar', [
+                'webhookUrlJson' => json_encode(self::WEBHOOK_URL),
+                'payloadJson' => json_encode($payload),
             ])->render();
-        }, 10, 3);
-    }
-
-    public function registerViews()
-    {
-        $viewPath = resource_path('views/modules/sidebarwebhook');
-        $sourcePath = __DIR__ . '/../Resources/views';
-
-        $this->publishes([
-            $sourcePath => $viewPath
-        ], 'views');
-
-        $this->loadViewsFrom(array_merge(array_map(function ($path) {
-            return $path . '/modules/sidebarwebhook';
-        }, \Config::get('view.paths')), [$sourcePath]), 'sidebarwebhook');
+        }, -1, 3);
     }
 }
