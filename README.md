@@ -24,39 +24,44 @@ Other installations are possible, but those are not supported here.
 
 2. Unzip the file locally.
 
-3. Open SidebarWebhookServiceProvider.php using a code editor and change the value of `$webhookUri` to be your endpoint's secret URL.
+3. Open SidebarWebhookServiceProvider.php using a code editor and change the value of `WEBHOOK_URL` to be your endpoint's secret URL.
 
 4. Copy the folder into your server using SFTP.
 
    ```sh
-   scp -r ~/Desktop/freescout-sidebar-webhook root@freescout.examplec.com:/var/www/html/Modules/SidebarWebhook/
+   scp -r ~/Desktop/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
    ```
 
 5. Access your admin modules page like https://freescout.example.com/modules/list.
 
 5. Find **Sidebar Webhook** and click ACTIVATE.
+
 6. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
 
 ## Your webhook server
 
-Your webhook server will receive requests of type `application/x-www-form-urlencoded` (in PHP, access with `$_POST`...) and including the data like:
+Your webhook server will receive requests of type `application/x-www-form-urlencoded` (in PHP, access with `$_POST`...) looking like:
 
 ```json
 { 
-    "_token": "osnuthensuhtnoehu2398g3",
-    "customerEmail": "hello@example.com"
+    "customerEmail": "hello@example.com",
+    "customerPhones": [],
+    "conversationSubject": "Testing this email",
+    "conversationType": "email",
+    "mailboxId": 1,
+    "csrfToken": "osnuthensuhtnoehu2398g3"
 }
 ```
 
-Your response will be a partial HTML document which is directly injected into the sidebar.
+Your webhook server shall respond with a partial HTML document which is directly injected into the sidebar.
 
 ## Project scope
 
 Our goal is to have a very simple module to allow vast extensibility in the conversation sidebar.
 
-Anything that makes it simpler (removes unneded code) or more extensible for most people (adding a couple post parameters in `hooks()`) will be a welcome improvement.
+Anything that makes it simpler (removes unneded code) or more extensible for most people (adding a couple post parameters in `boot()`) will be a welcome improvement.
 
-At this point, it is a non-goal to add friendly configuration of the webhook URI or other configuration options.
+At this point, it is a non-goal to add friendly configuration of `WEBHOOK_URL` or other configuration options.
 
 ## Inspiration
 
