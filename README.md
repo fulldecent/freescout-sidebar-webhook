@@ -1,7 +1,8 @@
 # FreeScout Sidebar Webhook
+
 Sidebar Webhook asynchronously injects HTML from your server into conversation sidebars.
 
-This screenshot shows what it does: you can load any content, on a per-customer basis from your own web server, asynchronously, every time a conversation is loaded on the screen.
+This screenshot shows what it does: you can load any content on a per-customer, per-message basis from your own web server, asynchronously, every time a conversation is loaded on the screen.
 
 In this picture, the pink rectangle and happy faces were loaded from an external server based on the customer's email address.
 
@@ -18,7 +19,7 @@ In this picture, the pink rectangle and happy faces were loaded from an external
 
 These instructions assume you installed FreeScout using the [recommended process](https://github.com/freescout-helpdesk/freescout/wiki/Installation-Guide), the "one-click install" or the "interactive installation bash-script", and you are viewing this page using a macOS or Ubuntu system.
 
-Other installations are possible, but those are not supported here.
+Other installations are possible, but not supported here.
 
 1. Download the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases).
 
@@ -32,15 +33,21 @@ Other installations are possible, but those are not supported here.
    scp -r ~/Desktop/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
    ```
 
-5. Access your admin modules page like https://freescout.example.com/modules/list.
+5. SSH into the server and update permissions on that folder.
 
-5. Find **Sidebar Webhook** and click ACTIVATE.
+   ```sh
+   chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook/
+   ```
 
-6. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
+6. Access your admin modules page like https://freescout.example.com/modules/list.
+
+7. Find **Sidebar Webhook** and click ACTIVATE.
+
+8. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
 
 ## Your webhook server
 
-Your webhook server will receive requests of type `application/x-www-form-urlencoded` (in PHP, access with `$_POST`...) looking like:
+Your webhook server will receive requests of type `application/x-www-form-urlencoded` (in PHP, access with `$_POST`)
 
 ```json
 { 
