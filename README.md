@@ -62,6 +62,18 @@ Your webhook server will receive requests of type `application/x-www-form-urlenc
 
 Your webhook server shall respond with a partial HTML document which is directly injected into the sidebar.
 
+If your webhook server is on a different domain (e.g. crm.example.com) than your Free Scout server (e.g. freescout.example.com), then use like this HTTP header to avoid browser warnings/errors:
+
+```
+Access-Control-Allow-Origin: https://freescout.example.com
+```
+
+In PHP this can be acheived like:
+
+```php
+header('Access-Control-Allow-Origin: https://freescout.example.com');
+```
+
 ## Project scope
 
 Our goal is to have a very simple module to allow vast extensibility in the conversation sidebar.
