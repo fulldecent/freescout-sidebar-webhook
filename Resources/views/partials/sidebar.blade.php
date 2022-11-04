@@ -10,6 +10,8 @@
 			type: "post",
 		}).done(function(html) {
 			$("#swh-content").html(html);
-		});
+		}).fail(function() {
+		        $("#swh-content").html("🚫☁️");
+	        });
 	});
 @endsection
