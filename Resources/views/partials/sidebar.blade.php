@@ -6,6 +6,9 @@
 	$(document).ready(function(){
 		$.ajax({
 			url: {!! $webhookUrlJson !!},
+            xhrFields: {
+                withCredentials: true
+            },
 			data: {!! $payloadJson !!},
 			type: "post",
 		}).done(function(html) {
