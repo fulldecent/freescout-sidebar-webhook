@@ -82,6 +82,19 @@ Anything that makes it simpler (removes unneded code) or more extensible for mos
 
 At this point, it is a non-goal to add friendly configuration of `WEBHOOK_URL` or other configuration options.
 
+## Troubleshooting
+
+If something is not working, please try these steps so we can see what's wrong.
+
+1. Update FreeScout to the latest version (even if the new version doesn't have any relevant changes, the process of updating can sometimes fix problems that would prevent freescout-sidebar-webhook from running).
+2. Use `chown -r` to ensure the module has the same owner/permissions as other files in your FreeScout installation.
+3. Try to disable and reenable freescout-sidebare-webhook from your system/modules page.
+4. To confirm the module file is actually activated and readable you might add a line like this above the `private const MODULE_NAME` line. The code to add is: `file_put_contents("/tmp/sidebartmp", "is running");` And then you can confirm it is running by seeing if that file is created when you load the page.
+5. Next check for system logs. It will be helpful to note any warnings, errors or notices as they may instruct where the problem is coming from.
+6. Check your PHP version, is it a version supported by FreeScout?
+
+After you have checked all these things, please create an issue and detail how you tried each of these steps.
+
 ## Inspiration
 
 * This project was inspired by [Sidebar API](https://scoutdevs.com/downloads/sidebar-api/).
