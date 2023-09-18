@@ -13,6 +13,11 @@ class SidebarWebhookServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', self::MODULE_NAME);
         
         \Eventy::addAction('conversation.after_prev_convs', function($customer, $conversation, $mailbox) {
+            // Skip if no customer (e.g. a draft email)
+            if (empty($customer)) {
+                return;
+            }
+
             $payload = [
                 'customerEmail'       => $customer->getMainEmail(),
                 'customerPhones'      => $customer->getPhones(),
