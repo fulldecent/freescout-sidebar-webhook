@@ -8,5 +8,8 @@
     "providers": [
         "Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"
     ],
-    "requires": []
+    "requires": [],
+    "files": [
+        "start.php"
+    ]
 }

@@ -4,9 +4,10 @@ Sidebar Webhook asynchronously injects HTML from your server into conversation s
 
 This screenshot shows what it does: you can load any content on a per-customer, per-message basis from your own web server, asynchronously, every time a conversation is loaded on the screen.
 
-In this picture, the pink rectangle and happy faces were loaded from an external server based on the customer's email address.
+In this picture, the kittens and text were loaded from an external server based on the customer's email address.
 
-![screenshot](screenshot.png)
+![with title](sidebar-with-title.png)
+![without title](sidebar-without-title.png)
 
 ## Use cases
 
@@ -21,58 +22,51 @@ These instructions assume you installed FreeScout using the [recommended process
 
 Other installations are possible, but not supported here.
 
-1. Download the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases).
-
-2. Unzip the file locally.
-
-3. Open SidebarWebhookServiceProvider.php using a code editor and change the value of `WEBHOOK_URL` to be your endpoint's secret URL.
-
-4. Copy the folder into your server using SFTP.
-
-   ```sh
-   scp -r ~/Desktop/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
-   ```
-
-5. SSH into the server and update permissions on that folder.
-
-   ```sh
-   chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook/
-   ```
-
-6. Access your admin modules page like https://freescout.example.com/modules/list.
-
-7. Find **Sidebar Webhook** and click ACTIVATE.
-
-8. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
+1. Download the latest release of FreeScout Sidebar Webhook.
+2. Unzip the folder in your Modules directory so that you have a path like `./Modules/SidebarWebhook/`.
+3. Make sure the files are owned by the web server (e.g. `chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook`)
+4. Access your admin modules page like https://freescout.example.com/modules/list.
+5. Find **Sidebar Webhook** and click ACTIVATE.
+6. Configure the webhook URL in the mailbox settings. The webhook secret is optional and will be sent as part of the payload if set.
+7. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
 
 ## Your webhook server
 
-Your webhook server will receive requests of type `application/x-www-form-urlencoded` (in PHP, access with `$_POST`)
-
+Your webhook server will receive a POST request with the following JSON body:
 ```json
-{ 
+{
     "customerEmail": "hello@example.com",
     "customerPhones": [],
     "conversationSubject": "Testing this email",
     "conversationType": "email",
     "mailboxId": 1,
-    "csrfToken": "osnuthensuhtnoehu2398g3"
+    "secret": "some value that you have set"
 }
 ```
 
-Your webhook server shall respond with a partial HTML document which is directly injected into the sidebar.
+Your webhook server should respond with an HTML document that will be injected into the sidebar. The document should be a complete, well-formed HTML document like so:
 
-If your webhook server is on a different domain (e.g. crm.example.com) than your Free Scout server (e.g. freescout.example.com), then use like this HTTP header to avoid browser warnings/errors:
-
+```html
+<html>
+    <body>
+        <h1>Hello world</h1>
+    </body>
+</html>
 ```
-Access-Control-Allow-Origin: https://freescout.example.com
-```
 
-In PHP this can be acheived like:
+Anything included in the `<body>` tag will be injected into the sidebar. You can optionally set a title in the document and it will be used as the panel title in the sidebar:
 
-```php
-header('Access-Control-Allow-Origin: https://freescout.example.com');
+```html
+<html>
+    <head>
+        <title>My panel title</title>
+    </head>
+    <body>
+        <h1>Hello world</h1>
+    </body>
+</html>
 ```
+Setting CORS headers is not required, as the document is requested by the FreeScout server (not by the user's browser).
 
 ## Project scope
 
