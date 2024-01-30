@@ -29,7 +29,13 @@ function swh_load_content() {
 }
 
 $(document).ready(function() {
+    // If we're not actually viewing a conversation, don't try to do anything.
     if (typeof(getGlobalAttr('mailbox_id')) == "undefined" || typeof(getGlobalAttr('conversation_id')) == "undefined") {
+        return;
+    }
+
+    // If we don't have the #swh-content element, the server doesn't have a configured webhook URL.
+    if ($('#swh-content').length == 0) {
         return;
     }
 

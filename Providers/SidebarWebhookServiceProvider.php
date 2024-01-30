@@ -58,7 +58,7 @@ class SidebarWebhookServiceProvider extends ServiceProvider
         \Eventy::addAction('conversation.after_prev_convs', function ($customer, $conversation, $mailbox) {
             $url = \Option::get('sidebarwebhook.url')[(string)$mailbox->id] ?? '';
 
-            if (!empty($url)) {
+            if ($url != '') {
                 echo \View::make(self::MODULE_NAME . '::partials/sidebar', [])->render();
             }
         }, -1, 3);
