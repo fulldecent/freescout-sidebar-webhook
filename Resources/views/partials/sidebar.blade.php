@@ -1,20 +1,16 @@
-<div class="conv-sidebar-block" id="swh-content">
-	<img src="{{ asset('img/loader-tiny.gif') }}"/>
+<div class="conv-sidebar-block">
+    <div class="panel-group accordion accordion-empty">
+        <div class="panel-heading hide">
+            <h4 class="panel-title" id="swh-title"></h4>
+        </div>
+        <div class="panel-body">
+            <div class="panel panel-default hide" id="swh-content"></div>
+            <div class="panel panel-default" id="swh-loader">
+                <img src="{{ asset('img/loader-tiny.gif') }}" />
+            </div>
+            <div class="margin-top-10 small">
+                <a href="#" class="swh-refresh sidebar-block-link"><i class="glyphicon glyphicon-refresh"></i> {{ __("Refresh") }}</a>
+            </div>
+        </div>
+    </div>
 </div>
-@section('javascript')
-    @parent
-	$(document).ready(function(){
-		$.ajax({
-			url: {!! $webhookUrlJson !!},
-            xhrFields: {
-                withCredentials: true
-            },
-			data: {!! $payloadJson !!},
-			type: "post",
-		}).done(function(html) {
-			$("#swh-content").html(html);
-		}).fail(function() {
-		        $("#swh-content").html("🚫☁️");
-	        });
-	});
-@endsection

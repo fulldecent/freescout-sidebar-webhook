@@ -1,0 +1,1 @@
+<li @if (Route::is('mailboxes.sidebarwebhook'))class="active" @endif><a href="{{ route('mailboxes.sidebarwebhook', ['id'=>$mailbox->id]) }}"><i class="glyphicon glyphicon-cloud"></i> Sidebar Webhook</a></li>
