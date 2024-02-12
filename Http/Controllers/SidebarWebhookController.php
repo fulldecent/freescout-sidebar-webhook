@@ -88,10 +88,8 @@ class SidebarWebhookController extends Controller
                     'conversationSubject' => $conversation->getSubject(),
                     'conversationType'    => $conversation->getTypeName(),
                     'mailboxId'           => $mailbox->id,
+                    'secret'              => empty($secret) ? '' : $secret,
                 ];
-                if (!empty($secret)) {
-                    $payload['secret'] = $secret;
-                }
 
                 try {
                     $client = new \GuzzleHttp\Client();
