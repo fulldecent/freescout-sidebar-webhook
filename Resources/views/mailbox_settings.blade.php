@@ -10,17 +10,17 @@
 @section('content')
 
 <div class="section-heading">
-  Sidebar Webhook
+    Sidebar Webhook
 </div>
 
 @include('partials/flash_messages')
 
 <div class="row-container">
-  <div class="row">
-    <div class="col-xs-12">
-      @include('sidebarwebhook::settings')
+    <div class="row">
+        <div class="col-xs-12">
+            @include('sidebarwebhook::settings')
+        </div>
     </div>
-  </div>
 </div>
 
 @endsection
