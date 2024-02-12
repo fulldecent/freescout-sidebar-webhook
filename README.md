@@ -22,13 +22,20 @@ These instructions assume you installed FreeScout using the [recommended process
 
 Other installations are possible, but not supported here.
 
-1. Download the latest release of FreeScout Sidebar Webhook.
-2. Unzip the folder in your Modules directory so that you have a path like `./Modules/SidebarWebhook/`.
-3. Make sure the files are owned by the web server (e.g. `chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook`)
-4. Access your admin modules page like https://freescout.example.com/modules/list.
-5. Find **Sidebar Webhook** and click ACTIVATE.
-6. Configure the webhook URL in the mailbox settings. The webhook secret is optional and will be sent as part of the payload if set.
-7. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
+1. Download the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases).
+2. Unzip the file locally.
+3. Copy the folder into your server using SFTP.
+   ```sh
+   scp -r ~/Downloads/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
+   ```
+4. SSH into the server and update permissions on that folder.
+   ```sh
+   chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook/
+   ```
+5. Access your admin modules page like https://freescout.example.com/modules/list.
+6. Find **Sidebar Webhook** and click ACTIVATE.
+7. Configure the webhook URL in the mailbox settings. The webhook secret is optional and will be sent as part of the payload if set.
+8. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
 
 ## Your webhook server
 
