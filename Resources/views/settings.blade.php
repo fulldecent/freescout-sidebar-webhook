@@ -1,7 +1,7 @@
 <form class="form-horizontal margin-top margin-bottom" method="POST" action="">
     {{ csrf_field() }}
 
-    <div class="form-group{{ $errors->has('settings.woocommerce->url') ? ' has-error' : '' }}">
+    <div class="form-group{{ $errors->has('settings.sidebarwebhook->url') ? ' has-error' : '' }}">
         <label class="col-sm-2 control-label">{{ __('Webhook URL') }}</label>
 
         <div class="col-sm-6">
