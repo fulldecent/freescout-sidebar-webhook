@@ -81,8 +81,6 @@ Our goal is to have a very simple module to allow vast extensibility in the conv
 
 Anything that makes it simpler (removes unneded code) or more extensible for most people (adding a couple post parameters in `boot()`) will be a welcome improvement.
 
-At this point, it is a non-goal to add friendly configuration of `WEBHOOK_URL` or other configuration options.
-
 ## Troubleshooting
 
 If something is not working, please try these steps so we can see what's wrong.
