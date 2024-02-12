@@ -44,7 +44,7 @@ Your webhook server will receive a POST request with the following JSON body:
 }
 ```
 
-Your webhook server should respond with an HTML document that will be injected into the sidebar. The document should be a complete, well-formed HTML document like so:
+Your webhook server shall respond with an HTML document that will be injected into the sidebar. The document should be a complete, well-formed HTML document like so:
 
 ```html
 <html>
