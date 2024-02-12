@@ -75,6 +75,8 @@ Anything included in the `<body>` tag will be injected into the sidebar. You can
 ```
 Setting CORS headers is not required, as the document is requested by the FreeScout server (not by the user's browser).
 
+**NOTE**: The webhook response is parsed with the PHP [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class. The response must be well-formed, not all HTML5 tags are supported, and the encoding will be assumed to be `ISO-8859-1` if you do not include `<meta http-equiv="Content-Type" content="text/html; charset=utf-8">` in the `<head>` tag of the webhook response.
+
 ## Project scope
 
 Our goal is to have a very simple module to allow vast extensibility in the conversation sidebar.
