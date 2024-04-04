@@ -4,9 +4,10 @@ Sidebar Webhook asynchronously injects HTML from your server into conversation s
 
 This screenshot shows what it does: you can load any content on a per-customer, per-message basis from your own web server, asynchronously, every time a conversation is loaded on the screen.
 
-In this picture, the pink rectangle and happy faces were loaded from an external server based on the customer's email address.
+In this picture, the kittens and text were loaded from an external server based on the customer's email address.
 
-![screenshot](screenshot.png)
+![with title](sidebar-with-title.png)
+![without title](sidebar-without-title.png)
 
 ## Use cases
 
@@ -22,57 +23,61 @@ These instructions assume you installed FreeScout using the [recommended process
 Other installations are possible, but not supported here.
 
 1. Download the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases).
-
 2. Unzip the file locally.
-
-3. Open SidebarWebhookServiceProvider.php using a code editor and change the value of `WEBHOOK_URL` to be your endpoint's secret URL.
-
-4. Copy the folder into your server using SFTP.
-
+3. Copy the folder into your server using SFTP. (ℹ️ Folder is renamed in this process.)
    ```sh
-   scp -r ~/Desktop/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
+   scp -r ~/Downloads/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
    ```
-
-5. SSH into the server and update permissions on that folder.
-
+4. SSH into the server and update permissions on that folder. 
    ```sh
    chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook/
    ```
-
-6. Access your admin modules page like https://freescout.example.com/modules/list.
-
-7. Find **Sidebar Webhook** and click ACTIVATE.
-
-8. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
+5. Access your admin modules page like https://freescout.example.com/modules/list.
+6. Find **Sidebar Webhook** and click ACTIVATE.
+7. Configure the webhook URL in the mailbox settings. The webhook secret is optional and will be sent as part of the payload if set.
+8. After everything works, purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
 
 ## Your webhook server
 
-Your webhook server will receive requests of type `application/x-www-form-urlencoded` (in PHP, access with `$_POST`)
-
+Your webhook server will receive a POST request with this kind of JSON body:
 ```json
-{ 
+{
+    "conversationSubject": "Testing this sidebar",
+    "conversationType": "Phone",
     "customerEmail": "hello@example.com",
-    "customerPhones": [],
-    "conversationSubject": "Testing this email",
-    "conversationType": "email",
+    "customerPhones": [{
+	    "n": "",
+      "type": 1,
+      "value": ""
+    }],
     "mailboxId": 1,
-    "csrfToken": "osnuthensuhtnoehu2398g3"
+    "secret": "0C7DA918-E72C-47B2-923B-0C5BB6A6104E"
 }
 ```
 
-Your webhook server shall respond with a partial HTML document which is directly injected into the sidebar.
+Your webhook server shall respond with content to be injected into the sidebar. The document should be a complete, well-formed HTML document like so:
 
-If your webhook server is on a different domain (e.g. crm.example.com) than your Free Scout server (e.g. freescout.example.com), then use like this HTTP header to avoid browser warnings/errors:
-
+```html
+<html>
+    <body>
+        <h1>Hello world</h1>
+    </body>
+</html>
 ```
-Access-Control-Allow-Origin: https://freescout.example.com
-```
 
-In PHP this can be acheived like:
+You can optionally set a title in the document and it will be used as the panel title in the sidebar:
 
-```php
-header('Access-Control-Allow-Origin: https://freescout.example.com');
+```html
+<html>
+    <head>
+        <title>My panel title</title>
+    </head>
+    <body>
+        <h1>Hello world</h1>
+    </body>
+</html>
 ```
+Setting CORS headers is not required, as the document is requested by the FreeScout server (not by the user's browser).
 
 ## Project scope
 
@@ -80,9 +85,13 @@ Our goal is to have a very simple module to allow vast extensibility in the conv
 
 Anything that makes it simpler (removes unneded code) or more extensible for most people (adding a couple post parameters in `boot()`) will be a welcome improvement.
 
-At this point, it is a non-goal to add friendly configuration of `WEBHOOK_URL` or other configuration options.
-
 ## Troubleshooting
+
+Hints
+
+* >  Class "Modules\SidebarWebhook\Providers\SidebarWebhookServiceProvider" not found
+
+  Did you rename the folder as per step 3?
 
 If something is not working, please try these steps so we can see what's wrong.
 
