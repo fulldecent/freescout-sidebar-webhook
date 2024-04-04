@@ -24,7 +24,7 @@
             <input type="text" class="form-control input-sized-lg" name="settings[sidebarwebhook.secret]" value="{{ $settings['sidebarwebhook.secret'] }}">
 
             <p class="form-help">
-                {{ __('You can choose an arbitrary string. This string will be sent as a query parameter to authenticate requests.') }}
+                {{ __('You can choose an arbitrary string. This string will be sent as a parameter to authenticate requests.') }}
             </p>
         </div>
     </div>
