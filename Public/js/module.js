@@ -14,8 +14,11 @@ function swh_load_content() {
             if (typeof(response.status) != "undefined" && response.status == 'success' && typeof(response.html) != "undefined" && response.html) {
                 $('#swh-content').html(response.html);
 
-                if (typeof(response.title) != "undefined" && response.title) {
-                    $('#swh-title').html(response.title);
+                // Find a <title> element inside the response and display it
+                title = $('#swh-content').find('title').first().text();
+
+                if (title) {
+                    $('#swh-title').html(title);
                     $('#swh-title').parent().removeClass('hide');
                 }
 

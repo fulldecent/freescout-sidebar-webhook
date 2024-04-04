@@ -24,34 +24,38 @@ Other installations are possible, but not supported here.
 
 1. Download the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases).
 2. Unzip the file locally.
-3. Copy the folder into your server using SFTP.
+3. Copy the folder into your server using SFTP. (ℹ️ Folder is renamed in this process.)
    ```sh
    scp -r ~/Downloads/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
    ```
-4. SSH into the server and update permissions on that folder.
+4. SSH into the server and update permissions on that folder. 
    ```sh
    chown -r www-data:www-data /var/www/html/Modules/SidebarWebhook/
    ```
 5. Access your admin modules page like https://freescout.example.com/modules/list.
 6. Find **Sidebar Webhook** and click ACTIVATE.
 7. Configure the webhook URL in the mailbox settings. The webhook secret is optional and will be sent as part of the payload if set.
-8. Purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
+8. After everything works, purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
 
 ## Your webhook server
 
-Your webhook server will receive a POST request with the following JSON body:
+Your webhook server will receive a POST request with this kind of JSON body:
 ```json
 {
+    "conversationSubject": "Testing this sidebar",
+    "conversationType": "Phone",
     "customerEmail": "hello@example.com",
-    "customerPhones": [],
-    "conversationSubject": "Testing this email",
-    "conversationType": "email",
+    "customerPhones": [{
+	    "n": "",
+      "type": 1,
+      "value": ""
+    }],
     "mailboxId": 1,
-    "secret": "some value that you have set"
+    "secret": "0C7DA918-E72C-47B2-923B-0C5BB6A6104E"
 }
 ```
 
-Your webhook server shall respond with an HTML document that will be injected into the sidebar. The document should be a complete, well-formed HTML document like so:
+Your webhook server shall respond with content to be injected into the sidebar. The document should be a complete, well-formed HTML document like so:
 
 ```html
 <html>
@@ -61,7 +65,7 @@ Your webhook server shall respond with an HTML document that will be injected in
 </html>
 ```
 
-Anything included in the `<body>` tag will be injected into the sidebar. You can optionally set a title in the document and it will be used as the panel title in the sidebar:
+You can optionally set a title in the document and it will be used as the panel title in the sidebar:
 
 ```html
 <html>
@@ -75,8 +79,6 @@ Anything included in the `<body>` tag will be injected into the sidebar. You can
 ```
 Setting CORS headers is not required, as the document is requested by the FreeScout server (not by the user's browser).
 
-**NOTE**: The webhook response is parsed with the PHP [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class. The response must be well-formed, not all HTML5 tags are supported, and the encoding will be assumed to be `ISO-8859-1` if you do not include `<meta http-equiv="Content-Type" content="text/html; charset=utf-8">` in the `<head>` tag of the webhook response.
-
 ## Project scope
 
 Our goal is to have a very simple module to allow vast extensibility in the conversation sidebar.
@@ -84,6 +86,12 @@ Our goal is to have a very simple module to allow vast extensibility in the conv
 Anything that makes it simpler (removes unneded code) or more extensible for most people (adding a couple post parameters in `boot()`) will be a welcome improvement.
 
 ## Troubleshooting
+
+Hints
+
+* >  Class "Modules\SidebarWebhook\Providers\SidebarWebhookServiceProvider" not found
+
+  Did you rename the folder as per step 3?
 
 If something is not working, please try these steps so we can see what's wrong.
 

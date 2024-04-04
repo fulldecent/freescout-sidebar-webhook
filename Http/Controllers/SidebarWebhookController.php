@@ -100,18 +100,7 @@ class SidebarWebhookController extends Controller
                         ],
                         'body' => json_encode($payload),
                     ]);
-
-                    $dom = new \DOMDocument();
-                    $dom->loadHTML($result->getBody()->getContents());
-
-                    $title = $dom->getElementsByTagName('title');
-                    if ($title->count() > 0) {
-                        $response['title'] = $title->item(0)->nodeValue;
-                    }
-
-                    $body = $dom->getElementsByTagName('body');
-                    $response['html'] = $dom->saveHTML($body->item(0));
-
+                    $response['html'] = $result->getBody()->getContents();
                     $response['status'] = 'success';
                 } catch (\Exception $e) {
                     $response['msg'] = 'Webhook error: ' . $e->getMessage();
