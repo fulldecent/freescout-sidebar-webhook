@@ -13,7 +13,6 @@ function swh_load_content() {
         },
         laroute.route("sidebarwebhook.ajax"),
         function (response) {
-            console.log(response.html, "sdssdsd");
             if (
                 typeof response.status != "undefined" &&
                 response.status == "success" &&
