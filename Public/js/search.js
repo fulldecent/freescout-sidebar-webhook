@@ -4,9 +4,11 @@ $(document).ready(function () {
   const clientResults = $("#client-results");
   const cancelButton = $("#cancel-button");
   let clients = [];
+  let user = '';
+  let searchTerm = '';
 
   searchInput.on("input", function () {
-    const searchTerm = $(this).val();
+    searchTerm = $(this).val();
     if (searchTerm.length >= 1) {
       getSearchResults(searchTerm);
     } else {
@@ -36,6 +38,7 @@ $(document).ready(function () {
           response.data
         ) {
           const data = JSON.parse(response.data || "{}");
+          user = response.user || {};
           updateResults(data.clients);
         } else {
           showAjaxError(response);
@@ -92,7 +95,7 @@ $(document).ready(function () {
           text: `Add New Client`,
           click: function () {
             window.open(
-              `https://mc2.townweb.com/clients?action=new_client`,
+              `https://mc2.townweb.com/clients?action=new_client&name=${searchTerm}`,
               "_blank"
             );
           },
@@ -111,9 +114,13 @@ $(document).ready(function () {
 
   function goClient(id, action) {
     window.open(
-      `https://mc2.townweb.com/clients/edit/${id}?action=${action}`,
+      `https://mc2.townweb.com/clients/edit/${id}?action=${action}&${objectToQuery(user)}`,
       "_blank"
     );
     clearResults();
+  }
+
+  function objectToQuery(obj) {
+    return Object.entries(obj).map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`).join('&');
   }
 });

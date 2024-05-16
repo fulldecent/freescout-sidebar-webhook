@@ -121,6 +121,8 @@ class SidebarWebhookController extends Controller
 
                 try {
                     $mailbox = Mailbox::findOrFail($request->mailbox_id);
+                    $conversation = Conversation::findOrFail($request->conversation_id);
+                    $customer = $conversation->customer;
                 } catch (\Exception $e) {
                     $response['msg'] = 'Invalid mailbox or customer';
                     break;
@@ -144,6 +146,7 @@ class SidebarWebhookController extends Controller
                         ]
                     ]);
                     $response['data'] = $result->getBody()->getContents();
+                    $response['user'] = ["email" => $customer->getMainEmail(), 'phone' => $customer->getPhones()];
                     $response['status'] = 'success';
                 } catch (\Exception $e) {
                     $response['msg'] = 'Global search error: ' . $e->getMessage();
