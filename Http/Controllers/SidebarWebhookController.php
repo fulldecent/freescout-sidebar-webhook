@@ -103,6 +103,9 @@ class SidebarWebhookController extends Controller
                             'Accept' => 'text/html',
                         ],
                         'body' => json_encode($payload),
+                        'connect_timeout' => 5,
+                        'timeout' => 10,
+                        'http_errors' => true,
                     ]);
                     $response['html'] = $result->getBody()->getContents();
                     $response['status'] = 'success';
