@@ -1,0 +1,46 @@
+name: Release
+
+# Attaches SidebarWebhook.zip and version.txt to every published release.
+# module.json points FreeScout's auto-updater at these assets via releases/latest/download/.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to (re)build assets for
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+
+      # FreeScout offers an update when version.txt is newer than the installed module.json,
+      # so a release whose module.json was not bumped would be offered again and again.
+      - name: Check that the tag matches module.json
+        run: |
+          version="$(jq -r .version module.json)"
+          if [ "$version" != "$TAG" ]; then
+            echo "::error::Tag '$TAG' does not match module.json version '$version'"
+            exit 1
+          fi
+
+      # FreeScout extracts the zip into Modules/ as-is, so its root folder must be SidebarWebhook/.
+      - name: Build assets
+        run: |
+          git archive --format=zip --prefix=SidebarWebhook/ -o SidebarWebhook.zip HEAD
+          echo "$TAG" > version.txt
+          unzip -l SidebarWebhook.zip
+
+      - name: Upload assets to the release
+        run: gh release upload "$TAG" SidebarWebhook.zip version.txt --clobber

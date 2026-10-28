@@ -22,11 +22,11 @@ These instructions assume you installed FreeScout using the [recommended process
 
 Other installations are possible, but not supported here.
 
-1. Download the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases).
-2. Unzip the file locally.
-3. Copy the folder into your server using SFTP. (ℹ️ Folder is renamed in this process.)
+1. Download `SidebarWebhook.zip` from the [latest release of FreeScout Sidebar Webhook](https://github.com/fulldecent/freescout-sidebar-webhook/releases/latest).
+2. Unzip the file locally. It contains a folder named `SidebarWebhook`.
+3. Copy the folder into your server using SFTP.
    ```sh
-   scp -r ~/Downloads/freescout-sidebar-webhook root@freescout.example.com:/var/www/html/Modules/SidebarWebhook/
+   scp -r ~/Downloads/SidebarWebhook root@freescout.example.com:/var/www/html/Modules/
    ```
 4. SSH into the server and update permissions on that folder. 
    ```sh
@@ -36,6 +36,16 @@ Other installations are possible, but not supported here.
 6. Find **Sidebar Webhook** and click ACTIVATE.
 7. Configure the webhook URL in the mailbox settings. The webhook secret is optional and will be sent as part of the payload if set.
 8. After everything works, purchase a license code by sending USD 10 at https://www.paypal.com/paypalme/fulldecent/10usd
+
+## Updating
+
+The module updates itself from your FreeScout modules page (requires FreeScout 1.8.124 or later). FreeScout checks `version.txt` of the latest GitHub release and installs its `SidebarWebhook.zip`.
+
+## Releasing
+
+1. Bump `version` in `module.json` and commit.
+2. Publish a GitHub release whose tag equals that version (e.g. `3.2.3`, no `v` prefix).
+3. The Release workflow attaches `SidebarWebhook.zip` and `version.txt` to the release. It fails if the tag and `module.json` disagree.
 
 ## Your webhook server
 
