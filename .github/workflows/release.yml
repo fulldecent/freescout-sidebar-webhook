@@ -1,10 +1,11 @@
 name: Release
 
-# Attaches SidebarWebhook.zip and version.txt to every published release.
+# Publishes a release with SidebarWebhook.zip and version.txt attached for every version tag.
 # module.json points FreeScout's auto-updater at these assets via releases/latest/download/.
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
     inputs:
       tag:
@@ -18,7 +19,7 @@ jobs:
   assets:
     runs-on: ubuntu-latest
     env:
-      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+      TAG: ${{ inputs.tag || github.ref_name }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
@@ -42,5 +43,12 @@ jobs:
           echo "$TAG" > version.txt
           unzip -l SidebarWebhook.zip
 
-      - name: Upload assets to the release
-        run: gh release upload "$TAG" SidebarWebhook.zip version.txt --clobber
+      # gh release create uploads to a draft and publishes it afterwards, so releases/latest
+      # never points at a release without assets.
+      - name: Publish the release with its assets
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" SidebarWebhook.zip version.txt --clobber
+          else
+            gh release create "$TAG" SidebarWebhook.zip version.txt --verify-tag --title "$TAG" --generate-notes
+          fi

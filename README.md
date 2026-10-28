@@ -41,11 +41,15 @@ Other installations are possible, but not supported here.
 
 The module updates itself from your FreeScout modules page (requires FreeScout 1.8.124 or later). FreeScout checks `version.txt` of the latest GitHub release and installs its `SidebarWebhook.zip`.
 
+Installations of version 3.2.2 or earlier still point at the old update URLs. Update those once by hand with `SidebarWebhook.zip` from the latest release (steps 1-4 above, replacing `Modules/SidebarWebhook/`). If an earlier automatic update created a `Modules/freescout-sidebar-webhook-main/` folder, delete it.
+
 ## Releasing
 
 1. Bump `version` in `module.json` and commit.
-2. Publish a GitHub release whose tag equals that version (e.g. `3.2.3`, no `v` prefix).
-3. The Release workflow attaches `SidebarWebhook.zip` and `version.txt` to the release. It fails if the tag and `module.json` disagree.
+2. Push a tag equal to that version (e.g. `git tag 3.2.3 && git push origin 3.2.3`, no `v` prefix).
+3. The Release workflow builds `SidebarWebhook.zip` and `version.txt` and publishes the GitHub release with both attached. It fails if the tag and `module.json` disagree. Edit the release notes afterwards if you like.
+
+To add the assets to an existing release, run the Release workflow manually with that tag.
 
 ## Your webhook server
 
