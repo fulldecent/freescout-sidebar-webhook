@@ -2,11 +2,12 @@
 
 namespace Modules\SidebarWebhook\Http\Controllers;
 
-use App\Mailbox;
 use App\Conversation;
+use App\Mailbox;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\SidebarWebhook\WebhookPayload;
 
 class SidebarWebhookController extends Controller
 {
@@ -82,18 +83,18 @@ class SidebarWebhookController extends Controller
                     break;
                 }
 
-                $payload = [
-                    'customerId'          => $customer->id,
-                    'customerEmail'       => $customer->getMainEmail(),
-                    'customerEmails'      => $customer->emails->pluck('email')->toArray(),
-                    'customerPhones'      => $customer->getPhones(),
-                    'conversationSubject' => $conversation->getSubject(),
-                    'conversationType'    => $conversation->getTypeName(),
-                    'conversationId'      => $conversation->id,
-                    'conversationNumber'  => $conversation->number,
-                    'mailboxId'           => $mailbox->id,
-                    'secret'              => empty($secret) ? '' : $secret,
-                ];
+                $payload = WebhookPayload::make(
+                    (int) $customer->id,
+                    $customer->getMainEmail(),
+                    $customer->emails->pluck('email')->toArray(),
+                    $customer->getPhones(),
+                    $conversation->getSubject(),
+                    $conversation->getTypeName(),
+                    (int) $conversation->id,
+                    (int) $conversation->number,
+                    (int) $mailbox->id,
+                    empty($secret) ? '' : $secret,
+                );
 
                 try {
                     $client = new \GuzzleHttp\Client();
