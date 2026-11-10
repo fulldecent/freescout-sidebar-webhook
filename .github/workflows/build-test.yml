@@ -26,6 +26,11 @@ name: Build and test
 
 on:
   workflow_call:
+    inputs:
+      ref:
+        description: Git ref to test and pack. Empty uses the workflow SHA.
+        required: false
+        type: string
   push:
     branches:
       - main
@@ -42,6 +47,8 @@ jobs:
     steps:
       - name: Check out this commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -74,6 +81,8 @@ jobs:
     steps:
       - name: Check out this commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Pack
         run: |
@@ -95,14 +104,18 @@ jobs:
           unzip -l dist/SidebarWebhook.zip | grep -q 'SidebarWebhook/WebhookPayload.php'
           unzip -l dist/SidebarWebhook.zip | grep -q 'SidebarWebhook/version.txt'
 
+      # Fork pull requests get a read-only token. Attestation needs id-token write,
+      # which that token does not have. The publish job attests the release build.
       - name: Attest the build
         id: attest
+        if: github.event_name != 'pull_request'
         uses: actions/attest@v4
         with:
           subject-path: dist/*
 
       # After attesting, so the bundle is not one of its own subjects.
       - name: Add the attestation to the build
+        if: steps.attest.outcome == 'success'
         env:
           BUNDLE: ${{ steps.attest.outputs.bundle-path }}
         run: cp "$BUNDLE" dist/attestation.sigstore.json

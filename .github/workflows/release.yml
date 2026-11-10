@@ -72,24 +72,54 @@ jobs:
             echo "tag_name=$tag" >> "$GITHUB_OUTPUT"
           fi
 
-  build-test:
-    name: Build and test
+  resolve:
+    name: Resolve the commit to publish
     needs: propose
     if: |
       always() &&
       (needs.propose.result == 'success' || needs.propose.result == 'skipped') &&
       (needs.propose.outputs.tag_name != '' ||
        (github.event_name == 'workflow_dispatch' && inputs.tag != ''))
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.pick.outputs.ref }}
+    steps:
+      # An existing tag is packed from its own commit. A new tag is packed from
+      # this workflow's SHA. gh release create does not move a tag that exists.
+      - name: Pick the commit
+        id: pick
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag || needs.propose.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          if object=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '{sha:.object.sha,type:.object.type}'); then
+            sha=$(printf '%s' "$object" | jq -r .sha)
+            type=$(printf '%s' "$object" | jq -r .type)
+            if [ "$type" = "tag" ]; then
+              sha=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$sha" --jq .object.sha)
+            fi
+            echo "ref=$sha" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-test:
+    name: Build and test
+    needs: [propose, resolve]
+    if: needs.resolve.result == 'success'
     permissions:
       contents: read
       id-token: write
       attestations: write
       artifact-metadata: write
     uses: ./.github/workflows/build-test.yml
+    with:
+      ref: ${{ needs.resolve.outputs.ref }}
 
   publish:
     name: Publish release
-    needs: [propose, build-test]
+    needs: [propose, resolve, build-test]
     if: |
       always() &&
       needs.build-test.result == 'success' &&
@@ -165,16 +195,29 @@ jobs:
           # SidebarWebhook.zip and version.txt are what FreeScout's updater downloads.
           gh release create "$TAG" dist/* \
             --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
+            --target "${{ needs.resolve.outputs.ref }}" \
             --title "$TAG" \
             --generate-notes \
             --latest
 
       - name: Mark the release pull request tagged
-        if: needs.propose.outputs.pr != ''
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ needs.propose.outputs.pr }}
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          gh api -X DELETE "repos/$GITHUB_REPOSITORY/issues/$PR/labels/autorelease:%20pending"
-          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/labels" -f "labels[]=autorelease: tagged"
+          set -euo pipefail
+          pr="$PR"
+          if [ -z "$pr" ]; then
+            version="${TAG#v}"
+            pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --limit 30 \
+              --json number,title,labels \
+              --jq ".[] | select(.title | test(\"release ${version}( |$)\")) | select(any(.labels[]; .name == \"autorelease: pending\")) | .number" \
+              | head -n 1)
+          fi
+          if [ -z "$pr" ]; then
+            echo "No release pull request to mark"
+            exit 0
+          fi
+          gh api -X DELETE "repos/$GITHUB_REPOSITORY/issues/$pr/labels/autorelease:%20pending"
+          gh api "repos/$GITHUB_REPOSITORY/issues/$pr/labels" -f "labels[]=autorelease: tagged"
