@@ -1,0 +1,116 @@
+# Build and test
+#
+# Install, test on PHP 8.4 and PHP 8.5, pack, and SLSA attest the module.
+#
+# This workflow produces the following things which release.yml consumes:
+#   1. $.jobs.build-test (this exact job ID)
+#   2. The artifact named "build"
+#
+# shivammathur/setup-php is not a GitHub-supported Action. It is how CI installs
+# PHP 8.4 and PHP 8.5. Ubuntu's php package does not read .php-version.
+# https://github.com/shivammathur/setup-php
+#
+# .php-version is 8.5, the local development version. The matrix also installs
+# 8.4 because FreeScout on the production host runs PHP 8.4. composer.json
+# requires php >=8.4, and config.platform.php is 8.4.99 so the lock file
+# installs on both.
+#
+# The zip is SidebarWebhook.zip, not the Composer archive name. FreeScout
+# extracts the zip into Modules/ and requires that root folder name.
+# version.txt is the module.json version with no v prefix. FreeScout compares
+# that file to the installed module.json.
+#
+# Public repositories can use attest for free. Private repos require Enterprise Cloud.
+
+name: Build and test
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.4", "8.5"]
+    steps:
+      - name: Check out this commit
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer
+
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-publish
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Check PHP
+        run: composer check
+
+      - name: Test
+        run: composer test
+
+  build-test:
+    name: Build and test
+    needs: php
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - name: Check out this commit
+        uses: actions/checkout@v7
+
+      - name: Pack
+        run: |
+          mkdir -p dist
+          version="$(jq -r .version module.json)"
+          file_version="$(tr -d '[:space:]' < version.txt)"
+          case "$version" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "module.json version must look like 1.2.3" >&2; exit 1 ;;
+          esac
+          if [ "$version" != "$file_version" ]; then
+            echo "module.json ($version) and version.txt ($file_version) disagree" >&2
+            exit 1
+          fi
+          printf '%s\n' "$version" > dist/version.txt
+          git archive --format=zip --prefix=SidebarWebhook/ -o dist/SidebarWebhook.zip HEAD
+          unzip -l dist/SidebarWebhook.zip
+          unzip -l dist/SidebarWebhook.zip | grep -q 'SidebarWebhook/module.json'
+          unzip -l dist/SidebarWebhook.zip | grep -q 'SidebarWebhook/WebhookPayload.php'
+          unzip -l dist/SidebarWebhook.zip | grep -q 'SidebarWebhook/version.txt'
+
+      - name: Attest the build
+        id: attest
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/*
+
+      # After attesting, so the bundle is not one of its own subjects.
+      - name: Add the attestation to the build
+        env:
+          BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+        run: cp "$BUNDLE" dist/attestation.sigstore.json
+
+      - name: Upload the build
+        uses: actions/upload-artifact@v7
+        with:
+          name: build
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14

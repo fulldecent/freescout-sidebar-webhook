@@ -1,4 +1,21 @@
-# Kept out of the release zip built by .github/workflows/release.yml
+* text=auto eol=lf
+
+# The published archive is the FreeScout module. CI keeps the rest.
 /.github export-ignore
-/.gitattributes export-ignore
+/.editorconfig export-ignore
+/.gitignore export-ignore
+/.markdownlint.json export-ignore
+/.markdownlintignore export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/.php-version export-ignore
+/.prettierignore export-ignore
+/.release-please-manifest.json export-ignore
+/CHANGELOG.md export-ignore
+/composer.lock export-ignore
+/dist export-ignore
+/phpstan.neon export-ignore
+/phpunit.xml.dist export-ignore
+/release-please-config.json export-ignore
+/tests export-ignore
+/vendor export-ignore
 /*.png export-ignore

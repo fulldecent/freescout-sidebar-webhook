@@ -1,24 +1,51 @@
 {
-    "name": "fulldecent/freescout-sidebar-webhook",
-    "description": "",
-    "authors": [
-        {
-            "name": "William Entriken",
-            "email": "github.com@phor.net"
-        }
-    ],
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"
-            ],
-            "aliases": {
-            }
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "Modules\\SidebarWebhook\\": ""
-        }
+  "name": "fulldecent/freescout-sidebar-webhook",
+  "description": "Sidebar Webhook asynchronously injects HTML from your server into conversation sidebars.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "William Entriken",
+      "email": "github.com@phor.net"
     }
+  ],
+  "require": {
+    "php": ">=8.4"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.64",
+    "phpstan/phpstan": "^2.0",
+    "phpunit/phpunit": "^12.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"
+      ],
+      "aliases": {}
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Modules\\SidebarWebhook\\": ""
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Modules\\SidebarWebhook\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "8.4.99"
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "test": "phpunit",
+    "check": [
+      "php-cs-fixer fix --dry-run --diff",
+      "phpstan analyse --no-progress --memory-limit=1G"
+    ]
+  }
 }
