@@ -107,7 +107,7 @@ jobs:
   build-test:
     name: Build and test
     needs: [propose, resolve]
-    if: needs.resolve.result == 'success'
+    if: always() && needs.resolve.result == 'success'
     permissions:
       contents: read
       id-token: write
