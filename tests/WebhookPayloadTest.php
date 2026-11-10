@@ -22,6 +22,7 @@ final class WebhookPayloadTest extends TestCase
             78,
             1,
             '0C7DA918-E72C-47B2-923B-0C5BB6A6104E',
+            'h1xKF8N5n3ajCg3QG43Gz0UWm',
         );
 
         self::assertSame(
@@ -36,6 +37,7 @@ final class WebhookPayloadTest extends TestCase
                 'conversationNumber',
                 'mailboxId',
                 'secret',
+                'cspNonce',
             ],
             array_keys($payload),
         );
@@ -48,11 +50,12 @@ final class WebhookPayloadTest extends TestCase
         self::assertSame(78, $payload['conversationNumber']);
         self::assertSame(1, $payload['mailboxId']);
         self::assertSame('0C7DA918-E72C-47B2-923B-0C5BB6A6104E', $payload['secret']);
+        self::assertSame('h1xKF8N5n3ajCg3QG43Gz0UWm', $payload['cspNonce']);
     }
 
     public function testKeepsAnEmptySecret(): void
     {
-        $payload = WebhookPayload::make(1, 'a@example.com', [], [], 'Subject', 'Email', 2, 3, 4, '');
+        $payload = WebhookPayload::make(1, 'a@example.com', [], [], 'Subject', 'Email', 2, 3, 4, '', '');
 
         self::assertSame('', $payload['secret']);
         self::assertArrayHasKey('secret', $payload);
@@ -70,6 +73,7 @@ final class WebhookPayloadTest extends TestCase
             2,
             3,
             4,
+            '',
             '',
         );
 
