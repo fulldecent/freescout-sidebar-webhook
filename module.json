@@ -12,7 +12,6 @@
     "files": [
         "start.php"
     ],
-    "latestVersionUrl": "https://raw.githubusercontent.com/fulldecent/freescout-sidebar-webhook/refs/heads/main/module.json",
-    "latestVersionZipUrl": "https://github.com/fulldecent/freescout-sidebar-webhook/archive/refs/heads/main.zip"
-   
+    "latestVersionUrl": "https://github.com/fulldecent/freescout-sidebar-webhook/releases/latest/download/version.txt",
+    "latestVersionZipUrl": "https://github.com/fulldecent/freescout-sidebar-webhook/releases/latest/download/SidebarWebhook.zip"
 }

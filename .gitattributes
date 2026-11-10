@@ -1,0 +1,4 @@
+# Kept out of the release zip built by .github/workflows/release.yml
+/.github export-ignore
+/.gitattributes export-ignore
+/*.png export-ignore
