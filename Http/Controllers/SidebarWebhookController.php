@@ -82,6 +82,13 @@ class SidebarWebhookController extends Controller
                     break;
                 }
 
+                // The page nonce is read in the browser. Helper::cspNonce() here is a
+                // different value, because this Ajax request is a new PHP request.
+                $cspNonce = $request->csp_nonce ?? '';
+                if (!is_string($cspNonce) || !preg_match('/\A[A-Za-z0-9]{1,128}\z/', $cspNonce)) {
+                    $cspNonce = '';
+                }
+
                 $payload = [
                     'customerId'          => $customer->id,
                     'customerEmail'       => $customer->getMainEmail(),
@@ -93,6 +100,7 @@ class SidebarWebhookController extends Controller
                     'conversationNumber'  => $conversation->number,
                     'mailboxId'           => $mailbox->id,
                     'secret'              => empty($secret) ? '' : $secret,
+                    'cspNonce'            => $cspNonce,
                 ];
 
                 try {

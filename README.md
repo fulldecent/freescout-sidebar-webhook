@@ -45,6 +45,8 @@ Your webhook server will receive a POST request with this kind of JSON body:
     "customerId": 123,
     "conversationSubject": "Testing this sidebar",
     "conversationType": "Phone",
+    "conversationId": 456,
+    "conversationNumber": 1001,
     "customerEmail": "hello@example.com",
     "customerEmails": [
       "hello@example.com",
@@ -56,7 +58,8 @@ Your webhook server will receive a POST request with this kind of JSON body:
       "value": ""
     }],
     "mailboxId": 1,
-    "secret": "0C7DA918-E72C-47B2-923B-0C5BB6A6104E"
+    "secret": "0C7DA918-E72C-47B2-923B-0C5BB6A6104E",
+    "cspNonce": "h1xKF8N5n3ajCg3QG43Gz0UWm"
 }
 ```
 
@@ -83,6 +86,38 @@ You can optionally set a title in the document and it will be used as the panel 
 </html>
 ```
 Setting CORS headers is not required, as the document is requested by the FreeScout server (not by the user's browser).
+
+## Scripts
+
+FreeScout's Content-Security-Policy allows scripts loaded from the FreeScout origin. Inline scripts, and scripts from other origins, run only when the `<script>` element carries the nonce for that page. The nonce changes on every full page load. It is not available from `Helper::cspNonce()` during the sidebar Ajax request: that call creates a new nonce for the Ajax request, which does not match the conversation page.
+
+This module reads the nonce from the page's CSP meta tag and sends it as `cspNonce`. Put that value on every script you return:
+
+```php
+<?php
+$payload = json_decode(file_get_contents('php://input'), true) ?: [];
+$nonce = $payload['cspNonce'] ?? '';
+if (!is_string($nonce) || !preg_match('/\A[A-Za-z0-9]{1,128}\z/', $nonce)) {
+    $nonce = '';
+}
+header('Content-Type: text/html; charset=UTF-8');
+?>
+<html>
+    <head>
+        <title>Orders</title>
+    </head>
+    <body>
+        <p id="swh-orders">Loading orders…</p>
+        <script type="module" nonce="<?php echo htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8'); ?>">
+            document.getElementById('swh-orders').textContent = 'Script ran';
+        </script>
+    </body>
+</html>
+```
+
+`cspNonce` stays the same if the agent only clicks Refresh. Read it from the current POST body. Do not cache it for a later page view.
+
+The sidebar inserts the returned HTML as a string. `onclick` and other event-handler attributes stay blocked by the policy. Scripts from the webhook run in the agent's browser, as the logged-in user, so point the webhook URL only at a server you trust.
 
 ## Project scope
 
