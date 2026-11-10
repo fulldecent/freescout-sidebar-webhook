@@ -99,10 +99,16 @@ jobs:
             if [ "$type" = "tag" ]; then
               sha=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$sha" --jq .object.sha)
             fi
-            echo "ref=$sha" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            sha="$GITHUB_SHA"
           fi
+          # actions/attest records this workflow's SHA. Packing a different
+          # commit would publish provenance for the wrong source.
+          if [ "$sha" != "$GITHUB_SHA" ]; then
+            echo "::error::Tag $TAG is $sha, but this workflow is $GITHUB_SHA. Re-run the workflow from that tag so the attestation matches the packed commit."
+            exit 1
+          fi
+          echo "ref=$sha" >> "$GITHUB_OUTPUT"
 
   build-test:
     name: Build and test
