@@ -1,3 +1,14 @@
+function swh_page_nonce() {
+    var content = $('meta[http-equiv="Content-Security-Policy"]').attr('content') || '';
+    var match = content.match(/'nonce-([^']+)'/);
+
+    if (!match || !/^[A-Za-z0-9]+$/.test(match[1])) {
+        return '';
+    }
+
+    return match[1];
+}
+
 function swh_load_content() {
     $('#swh-title').html('');
     $('#swh-title').parent().addClass('hide');
@@ -7,7 +18,8 @@ function swh_load_content() {
 	fsAjax({
 			action: 'loadSidebar',
             mailbox_id: getGlobalAttr('mailbox_id'),
-            conversation_id: getGlobalAttr('conversation_id')
+            conversation_id: getGlobalAttr('conversation_id'),
+            csp_nonce: swh_page_nonce()
 		},
 		laroute.route('sidebarwebhook.ajax'),
 		function(response) {
