@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.5.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.4.0...v3.5.0) (2026-11-11)
+
+
+### Features
+
+* time out an unreachable sidebar webhook ([4a4fade](https://github.com/fulldecent/freescout-sidebar-webhook/commit/4a4fadee98b5e5c4355bbd00f60299644570e69c)) by Paul Hegenberg
+* ignore sidebar refresh while a load is in flight ([5153519](https://github.com/fulldecent/freescout-sidebar-webhook/commit/5153519d8e58a808074d39a7cf9b8f8ed42c09f3))
+
 ## [3.4.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.3.0...v3.4.0) (2026-11-11)
 
 
