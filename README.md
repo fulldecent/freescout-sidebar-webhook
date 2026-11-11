@@ -207,9 +207,9 @@ After you have checked all these things, please create an issue and detail how y
 1. We use title case only for proper nouns, including the name of this project.
 1. [PSR-12](https://www.php-fig.org/psr/psr-12/) is why `*.php` uses four spaces in [.editorconfig](.editorconfig). Other files do not set an indent size.
 1. [composer.json `version`](https://getcomposer.org/doc/04-schema.md#version) is omitted. The git tag is the version. [composer.lock](composer.lock) is committed so CI is reproducible ([Composer: commit your lock file](https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control)). `git archive` leaves that lock file out.
-1. This project is built based on [best practices documented in php-package-template](https://github.com/fulldecent/php-package-template/), release v1.1.0.
+1. This project is built based on [best practices documented in php-package-template](https://github.com/fulldecent/php-package-template/), release v1.1.1.
 1. The floor for the README, the lint workflow, and the release workflow comes from [project-template](https://github.com/fulldecent/project-template), release v1.4.1.
 1. The Composer ignore rules in [.gitignore](.gitignore) come from [GitHub's Composer gitignore](https://github.com/github/gitignore/blob/main/Composer.gitignore).
 1. FreeScout module installation follows the [FreeScout installation guide](https://github.com/freescout-helpdesk/freescout/wiki/Installation-Guide). The updater reads `version.txt` and `SidebarWebhook.zip` from the latest GitHub release, which is why those two files are the release assets.
 1. This project was inspired by [Sidebar API](https://github.com/scout-devs/SidebarApi).
-1. This project is released under the [MIT license](LICENSE).
+1. This project is released under the [MIT license](LICENSE.md).
