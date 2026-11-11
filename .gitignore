@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Secrets. .env.example is the committed sample.
+.env
+.env.*
+!.env.example
+
+# https://github.com/github/gitignore/blob/main/Composer.gitignore
+composer.phar
+/vendor/
+
+# Commit composer.lock. A library may ignore it.
+# https://getcomposer.org/doc/02-libraries.md#lock-file
+# This project commits it so CI installs the same dev tools every time.
+# `git archive` leaves it out via .gitattributes.
+
+# PHPUnit
+.phpunit.cache
+.phpunit.result.cache
+
+# php-cs-fixer
+.php-cs-fixer.cache
+
+# PHPStan
+.phpstan.cache
+
+# Release artifacts
+/dist/

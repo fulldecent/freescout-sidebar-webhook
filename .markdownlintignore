@@ -1,0 +1,7 @@
+# Release Please writes this file
+
+CHANGELOG.md
+
+# Installed dependencies and release output
+vendor
+dist
