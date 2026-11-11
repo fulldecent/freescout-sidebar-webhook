@@ -5,13 +5,9 @@
   "version": "3.5.0",
   "detailsUrl": "https://github.com/fulldecent/freescout-sidebar-webhook",
   "author": "William Entriken",
-  "providers": [
-    "Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"
-  ],
+  "providers": ["Modules\\SidebarWebhook\\Providers\\SidebarWebhookServiceProvider"],
   "requires": [],
-  "files": [
-    "start.php"
-  ],
+  "files": ["start.php"],
   "latestVersionUrl": "https://github.com/fulldecent/freescout-sidebar-webhook/releases/latest/download/version.txt",
   "latestVersionZipUrl": "https://github.com/fulldecent/freescout-sidebar-webhook/releases/latest/download/SidebarWebhook.zip"
 }
