@@ -5,8 +5,8 @@
 
 ### Features
 
+* match native FreeScout sidebar panel styling ([3ae7b0d](https://github.com/fulldecent/freescout-sidebar-webhook/commit/3ae7b0d9ad096a3fa6490a526bfec1cb825fdf0a)) by Christian Foellmann
 * keep the sidebar title visible on refresh ([e5ae81a](https://github.com/fulldecent/freescout-sidebar-webhook/commit/e5ae81a488e8e89cd97da2e649bbfaceb5a6a863)), closes [#18](https://github.com/fulldecent/freescout-sidebar-webhook/issues/18)
-* match native FreeScout sidebar panel styling ([efa17a0](https://github.com/fulldecent/freescout-sidebar-webhook/commit/efa17a03b12d60128de8c5d0e55802d699819679))
 
 ## [3.3.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/3.2.2...v3.3.0) (2026-11-10)
 
