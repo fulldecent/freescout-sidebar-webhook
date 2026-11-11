@@ -1,6 +1,16 @@
+function swh_set_title(title) {
+  $("#swh-title").text(title);
+  $("#swh-title-mobile").text(title);
+  if (title) {
+    $("#swh-title").closest(".panel-heading").removeClass("hide");
+  }
+}
+
 function swh_load_content() {
-  $("#swh-title").html("");
-  $("#swh-title").parent().addClass("hide");
+  // A refresh keeps the heading. Only the first load, before a title exists, hides it.
+  if (!$.trim($("#swh-title").text())) {
+    $("#swh-title").closest(".panel-heading").addClass("hide");
+  }
   $("#swh-content").addClass("hide");
   $("#swh-loader").removeClass("hide");
 
@@ -21,11 +31,10 @@ function swh_load_content() {
         $("#swh-content").html(response.html);
 
         // Find a <title> element inside the response and display it
-        title = $("#swh-content").find("title").first().text();
+        var title = $("#swh-content").find("title").first().text();
 
         if (title) {
-          $("#swh-title").html(title);
-          $("#swh-title").parent().removeClass("hide");
+          swh_set_title(title);
         }
 
         $("#swh-loader").addClass("hide");
