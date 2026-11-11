@@ -6,13 +6,27 @@ function swh_set_title(title) {
   }
 }
 
+var swhLoading = false;
+
 function swh_load_content() {
+  // Each call holds a PHP worker until the webhook returns. Ignore a second
+  // refresh until this one finishes so clicks cannot fill the worker pool.
+  if (swhLoading) {
+    return;
+  }
+  swhLoading = true;
+
   // A refresh keeps the heading. Only the first load, before a title exists, hides it.
   if (!$.trim($("#swh-title").text())) {
     $("#swh-title").closest(".panel-heading").addClass("hide");
   }
   $("#swh-content").addClass("hide");
   $("#swh-loader").removeClass("hide");
+
+  function finished() {
+    swhLoading = false;
+    $("#swh-loader").addClass("hide");
+  }
 
   fsAjax(
     {
@@ -37,13 +51,18 @@ function swh_load_content() {
           swh_set_title(title);
         }
 
-        $("#swh-loader").addClass("hide");
+        finished();
         $("#swh-content").removeClass("hide");
       } else {
+        finished();
         showAjaxError(response);
       }
     },
     true,
+    function () {
+      finished();
+      showAjaxError({});
+    },
   );
 }
 
