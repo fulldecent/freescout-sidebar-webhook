@@ -4,9 +4,8 @@
       "release-type": "simple",
       "extra-files": [
         {
-          "type": "json",
-          "path": "module.json",
-          "jsonpath": "$.version"
+          "type": "generic",
+          "path": "module.json"
         }
       ]
     }
