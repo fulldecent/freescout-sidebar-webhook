@@ -4,7 +4,7 @@
   "description": "Sidebar Webhook asynchronously injects HTML from your server into conversation sidebars.",
   "img": "/modules/sidebarwebhook/img/module.png",
   "x-release-please-start-version": true,
-  "version": "3.5.0",
+  "version": "3.6.0",
   "x-release-please-end": true,
   "detailsUrl": "https://github.com/fulldecent/freescout-sidebar-webhook",
   "author": "William Entriken",
