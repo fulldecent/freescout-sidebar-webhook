@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.5.0...v3.6.0) (2026-11-16)
+
+
+### Features
+
+* show a module image on the FreeScout modules screen ([0ccc3ed](https://github.com/fulldecent/freescout-sidebar-webhook/commit/0ccc3ed61101f0cd6c829b75d03255dba4c9d359))
+* show a module image on the FreeScout modules screen ([538e21c](https://github.com/fulldecent/freescout-sidebar-webhook/commit/538e21cd394734d27d08548cdb78f0430a85589f))
+
 ## [3.5.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.4.0...v3.5.0) (2026-11-11)
 
 
