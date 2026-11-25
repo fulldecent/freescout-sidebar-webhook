@@ -70,11 +70,22 @@ class SidebarWebhookController extends Controller
                 try {
                     $mailbox = Mailbox::findOrFail($request->mailbox_id);
                     $conversation = Conversation::findOrFail($request->conversation_id);
-                    $customer = $conversation->customer;
                 } catch (\Exception $e) {
                     $response['msg'] = 'Invalid mailbox or customer';
                     break;
                 }
+
+                $user = $request->user();
+                if (
+                    !$user
+                    || (int) $conversation->mailbox_id !== (int) $mailbox->id
+                    || !$mailbox->userHasAccess($user->id)
+                ) {
+                    $response['msg'] = 'Invalid mailbox or customer';
+                    break;
+                }
+
+                $customer = $conversation->customer;
 
                 $url = \Option::get('sidebarwebhook.url')[(string)$mailbox->id] ?? '';
                 $secret = \Option::get('sidebarwebhook.secret')[(string)$mailbox->id] ?? '';
