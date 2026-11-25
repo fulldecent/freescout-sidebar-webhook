@@ -58,6 +58,8 @@ Your webhook server receives a POST request with this kind of JSON body:
   "customerId": 123,
   "conversationSubject": "Testing this sidebar",
   "conversationType": "Phone",
+  "conversationId": 456,
+  "conversationNumber": 78,
   "customerEmail": "hello@example.com",
   "customerEmails": ["hello@example.com", "welcome@example.com"],
   "customerPhones": [
@@ -98,6 +100,20 @@ You can optionally set a title in the document and it will be used as the panel 
 ```
 
 Setting CORS headers is not required, as the document is requested by the FreeScout server (not by the user's browser).
+
+## Scripts
+
+FreeScout allows a script in the sidebar only when that script carries the nonce from the conversation page. This module reads that nonce from the page and sets it on each `<script>` while inserting the HTML. The webhook does not receive the nonce. `Helper::cspNonce()` during the sidebar Ajax request is a different value and does not match the page.
+
+Return a normal inline script:
+
+```html
+<script>
+  alert("sidebar");
+</script>
+```
+
+Attributes such as `onclick` stay blocked. A script from the webhook runs in the agent's browser as the signed-in user, so point the webhook URL only at a server you trust.
 
 ## PHP versions
 
