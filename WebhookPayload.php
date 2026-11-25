@@ -25,8 +25,7 @@ final class WebhookPayload
      *     conversationId: int,
      *     conversationNumber: int,
      *     mailboxId: int,
-     *     secret: string,
-     *     cspNonce: string
+     *     secret: string
      * }
      */
     public static function make(
@@ -40,7 +39,6 @@ final class WebhookPayload
         int $conversationNumber,
         int $mailboxId,
         string $secret,
-        string $cspNonce,
     ): array {
         return [
             'customerId' => $customerId,
@@ -53,7 +51,6 @@ final class WebhookPayload
             'conversationNumber' => $conversationNumber,
             'mailboxId' => $mailboxId,
             'secret' => $secret,
-            'cspNonce' => $cspNonce,
         ];
     }
 }

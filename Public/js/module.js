@@ -9,6 +9,41 @@ function swh_page_nonce() {
   return match[1];
 }
 
+// The webhook returns HTML. Inline scripts run only with the conversation
+// page's nonce, which the webhook cannot see. innerHTML does not run scripts,
+// so each script is created here and given that nonce.
+function swh_insert_html(html) {
+  var nonce = swh_page_nonce();
+  var holder = document.createElement("div");
+  holder.innerHTML = html;
+  var scripts = Array.prototype.slice.call(holder.querySelectorAll("script")).map(function (oldScript) {
+    var spec = {
+      type: oldScript.getAttribute("type") || "",
+      src: oldScript.getAttribute("src") || "",
+      text: oldScript.textContent || "",
+    };
+    oldScript.parentNode.removeChild(oldScript);
+    return spec;
+  });
+  var target = document.getElementById("swh-content");
+  target.innerHTML = holder.innerHTML;
+  scripts.forEach(function (spec) {
+    var script = document.createElement("script");
+    if (nonce) {
+      script.nonce = nonce;
+    }
+    if (spec.type) {
+      script.type = spec.type;
+    }
+    if (spec.src) {
+      script.src = spec.src;
+    } else {
+      script.text = spec.text;
+    }
+    target.appendChild(script);
+  });
+}
+
 function swh_set_title(title) {
   $("#swh-title").text(title);
   $("#swh-title-mobile").text(title);
@@ -44,7 +79,6 @@ function swh_load_content() {
       action: "loadSidebar",
       mailbox_id: getGlobalAttr("mailbox_id"),
       conversation_id: getGlobalAttr("conversation_id"),
-      csp_nonce: swh_page_nonce(),
     },
     laroute.route("sidebarwebhook.ajax"),
     function (response) {
@@ -54,7 +88,7 @@ function swh_load_content() {
         typeof response.html != "undefined" &&
         response.html
       ) {
-        $("#swh-content").html(response.html);
+        swh_insert_html(response.html);
 
         // Find a <title> element inside the response and display it
         var title = $("#swh-content").find("title").first().text();
