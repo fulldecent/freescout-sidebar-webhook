@@ -9,35 +9,83 @@ function swh_page_nonce() {
   return match[1];
 }
 
+var swhInsertGeneration = 0;
+
+function swh_attr(spec, name) {
+  var found = "";
+  spec.attrs.forEach(function (attr) {
+    if (attr.name.toLowerCase() === name) {
+      found = attr.value;
+    }
+  });
+  return found;
+}
+
+function swh_has_attr(spec, name) {
+  return spec.attrs.some(function (attr) {
+    return attr.name.toLowerCase() === name;
+  });
+}
+
+// A classic or module script with src will fetch. nomodule fallbacks and
+// data blocks such as type=application/json do not, and they fire no load event.
+function swh_script_fetches(spec) {
+  if (!spec.src) {
+    return false;
+  }
+  var type = swh_attr(spec, "type").trim().toLowerCase();
+  var classic =
+    type === "" ||
+    type === "text/javascript" ||
+    type === "application/javascript" ||
+    type === "text/ecmascript" ||
+    type === "application/ecmascript";
+  if (type !== "module" && !classic) {
+    return false;
+  }
+  if (swh_has_attr(spec, "nomodule") && "noModule" in HTMLScriptElement.prototype) {
+    return false;
+  }
+  return true;
+}
+
 // The webhook returns HTML. Inline scripts run only with the conversation
 // page's nonce, which the webhook cannot see. innerHTML does not run scripts,
 // so each script is created here and given that nonce.
 function swh_insert_html(html) {
+  var generation = ++swhInsertGeneration;
   var nonce = swh_page_nonce();
   var holder = document.createElement("div");
   holder.innerHTML = html;
   var scripts = Array.prototype.slice.call(holder.querySelectorAll("script")).map(function (oldScript) {
+    var placeholder = document.createComment("swh-script");
     var spec = {
+      placeholder: placeholder,
       attrs: Array.prototype.slice.call(oldScript.attributes).map(function (attr) {
         return { name: attr.name, value: attr.value };
       }),
       src: oldScript.getAttribute("src") || "",
       text: oldScript.textContent || "",
     };
-    oldScript.parentNode.removeChild(oldScript);
+    oldScript.parentNode.replaceChild(placeholder, oldScript);
     return spec;
   });
   var target = document.getElementById("swh-content");
-  target.innerHTML = holder.innerHTML;
+  while (target.firstChild) {
+    target.removeChild(target.firstChild);
+  }
+  while (holder.firstChild) {
+    target.appendChild(holder.firstChild);
+  }
 
-  // External scripts load on their own. Append the next script only after
-  // this one's load or error, so an inline script waits for the library
-  // ahead of it.
   function appendAt(index) {
-    if (index >= scripts.length) {
+    if (generation !== swhInsertGeneration || index >= scripts.length) {
       return;
     }
     var spec = scripts[index];
+    if (!spec.placeholder.parentNode) {
+      return;
+    }
     var script = document.createElement("script");
     spec.attrs.forEach(function (attr) {
       if (attr.name.toLowerCase() === "nonce") {
@@ -49,17 +97,20 @@ function swh_insert_html(html) {
       script.nonce = nonce;
     }
     var proceed = function () {
+      if (generation !== swhInsertGeneration) {
+        return;
+      }
       appendAt(index + 1);
     };
-    if (spec.src) {
-      script.addEventListener("load", proceed);
-      script.addEventListener("error", proceed);
-      target.appendChild(script);
+    if (!swh_script_fetches(spec)) {
+      script.text = spec.text;
+      spec.placeholder.parentNode.replaceChild(script, spec.placeholder);
+      proceed();
       return;
     }
-    script.text = spec.text;
-    target.appendChild(script);
-    proceed();
+    script.addEventListener("load", proceed);
+    script.addEventListener("error", proceed);
+    spec.placeholder.parentNode.replaceChild(script, spec.placeholder);
   }
 
   appendAt(0);
