@@ -18,7 +18,9 @@ function swh_insert_html(html) {
   holder.innerHTML = html;
   var scripts = Array.prototype.slice.call(holder.querySelectorAll("script")).map(function (oldScript) {
     var spec = {
-      type: oldScript.getAttribute("type") || "",
+      attrs: Array.prototype.slice.call(oldScript.attributes).map(function (attr) {
+        return { name: attr.name, value: attr.value };
+      }),
       src: oldScript.getAttribute("src") || "",
       text: oldScript.textContent || "",
     };
@@ -27,21 +29,40 @@ function swh_insert_html(html) {
   });
   var target = document.getElementById("swh-content");
   target.innerHTML = holder.innerHTML;
-  scripts.forEach(function (spec) {
+
+  // External scripts load on their own. Append the next script only after
+  // this one's load or error, so an inline script waits for the library
+  // ahead of it.
+  function appendAt(index) {
+    if (index >= scripts.length) {
+      return;
+    }
+    var spec = scripts[index];
     var script = document.createElement("script");
+    spec.attrs.forEach(function (attr) {
+      if (attr.name.toLowerCase() === "nonce") {
+        return;
+      }
+      script.setAttribute(attr.name, attr.value);
+    });
     if (nonce) {
       script.nonce = nonce;
     }
-    if (spec.type) {
-      script.type = spec.type;
-    }
+    var proceed = function () {
+      appendAt(index + 1);
+    };
     if (spec.src) {
-      script.src = spec.src;
-    } else {
-      script.text = spec.text;
+      script.addEventListener("load", proceed);
+      script.addEventListener("error", proceed);
+      target.appendChild(script);
+      return;
     }
+    script.text = spec.text;
     target.appendChild(script);
-  });
+    proceed();
+  }
+
+  appendAt(0);
 }
 
 function swh_set_title(title) {

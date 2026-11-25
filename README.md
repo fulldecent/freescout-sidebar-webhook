@@ -113,7 +113,7 @@ Return a normal inline script:
 </script>
 ```
 
-A `type="module"` script is removed before it can run. Attributes such as `onclick` stay blocked. A script from the webhook runs in the agent's browser as the signed-in user, so point the webhook URL only at a server you trust.
+Attributes such as `onclick` stay blocked. A script from the webhook runs in the agent's browser as the signed-in user, so point the webhook URL only at a server you trust.
 
 ## PHP versions
 
