@@ -5,8 +5,7 @@
 
 ### Bug Fixes
 
-* require a signed-in agent to load the sidebar ([c06d65d](https://github.com/fulldecent/freescout-sidebar-webhook/commit/c06d65d274bf36a7d63317ffe8e8e29293e85cb0))
-* require a signed-in agent to load the sidebar ([6a3540a](https://github.com/fulldecent/freescout-sidebar-webhook/commit/6a3540ab0f76c10a30e8670ef2d6db7bf60c08ab))
+* require a signed-in agent to load the sidebar ([6a3540a](https://github.com/fulldecent/freescout-sidebar-webhook/commit/6a3540ab0f76c10a30e8670ef2d6db7bf60c08ab)), reported by Jars Jansen @ LJPc
 
 ## [3.6.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.5.0...v3.6.0) (2026-11-16)
 
