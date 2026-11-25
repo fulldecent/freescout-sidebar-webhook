@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.7.0](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.6.1...v3.7.0) (2026-11-25)
+
+
+### Features
+
+* send the page CSP nonce in the webhook payload ([6802ed1](https://github.com/fulldecent/freescout-sidebar-webhook/commit/6802ed101a38ef042e02aa1dc11da8e329c8b8ce))
+* send the page CSP nonce in the webhook payload ([e672155](https://github.com/fulldecent/freescout-sidebar-webhook/commit/e67215518d5868ab8ab463f39e03895e6cae133a)), closes [#14](https://github.com/fulldecent/freescout-sidebar-webhook/issues/14)
+
+
+### Bug Fixes
+
+* apply the page CSP nonce when inserting sidebar HTML ([96c9897](https://github.com/fulldecent/freescout-sidebar-webhook/commit/96c9897edd079142d6b8dd7651ced6ce73703ad0))
+* keep script attributes and run sidebar scripts in order ([84c42e7](https://github.com/fulldecent/freescout-sidebar-webhook/commit/84c42e78ac5093b16e6ec4faac995b926bf2167f))
+* keep sidebar scripts in place and drop stale loads ([116d1ca](https://github.com/fulldecent/freescout-sidebar-webhook/commit/116d1ca13add2cdcc5171ab6914462b02422313f))
+
 ## [3.6.1](https://github.com/fulldecent/freescout-sidebar-webhook/compare/v3.6.0...v3.6.1) (2026-11-25)
 
 
